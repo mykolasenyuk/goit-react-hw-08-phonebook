@@ -1,17 +1,27 @@
 // import { useState } from 'react';
-import React from 'react';
+import { lazy, Suspense } from 'react';
 import Container from './components/Container/Container';
 import AppBar from './components/AppBar/AppBar';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
-import { Switch, Route } from 'react-router-dom';
-import LoginView from './views/LoginView';
-import HomeView from './views/HomeView';
-import RegisterView from './views/RegisterView';
-import PhoneBookView from './views/PhoneBookView';
+import { Switch } from 'react-router-dom';
 import { authOperations } from './redux/auth';
+import PrivateRoute from './components/PrivateRoute';
+import PublicRoute from './components/PublicRoute';
+const HomeView = lazy(() =>
+  import('./views/HomeView' /*webpackChunkName: "home-view"*/),
+);
+const RegisterView = lazy(() =>
+  import('./views/RegisterView' /*webpackChunkName: "register-view"*/),
+);
+const LoginView = lazy(() =>
+  import('./views/LoginView' /*webpackChunkName: "login-view"*/),
+);
+const PhoneBookView = lazy(() =>
+  import('./views/PhoneBookView' /*webpackChunkName: "phonebook-view"*/),
+);
 
 export default function App() {
   const dispatch = useDispatch();
@@ -24,18 +34,23 @@ export default function App() {
       <Container>
         <AppBar />
         <Switch>
-          <Route exact path="/">
-            <HomeView />
-          </Route>
-          <Route path="/register">
-            <RegisterView />
-          </Route>
-          <Route path="/login">
-            <LoginView />
-          </Route>
-          <Route path="/phonebook">
-            <PhoneBookView />
-          </Route>
+          <Suspense fallback={<p>Loading...</p>}>
+            <PublicRoute exact path="/">
+              <HomeView />
+            </PublicRoute>
+
+            <PublicRoute exact path="/register" restricted>
+              <RegisterView />
+            </PublicRoute>
+
+            <PublicRoute exact path="/login" redirectTo="/phonebook" restricted>
+              <LoginView />
+            </PublicRoute>
+
+            <PrivateRoute path="/phonebook">
+              <PhoneBookView />
+            </PrivateRoute>
+          </Suspense>
         </Switch>
       </Container>
 
