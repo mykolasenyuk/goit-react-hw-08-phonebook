@@ -20,7 +20,7 @@ export default function App() {
   }, [dispatch]);
 
   return (
-    <div>
+    <>
       <Container>
         <AppBar />
         <Switch>
@@ -50,6 +50,6 @@ export default function App() {
         draggable
         pauseOnHover
       />
-    </div>
+    </>
   );
 }

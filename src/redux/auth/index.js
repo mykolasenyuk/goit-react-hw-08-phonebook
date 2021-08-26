@@ -1,3 +1,3 @@
-export { default as authOperations } from './authOperation';
-export { default as authSelectors } from './authSelectors';
-export { default as authReducer } from './authSlice';
+export * as authOperations from './authOperation';
+export * as authSelectors from './authSelectors';
+export * as authReducer from './authSlice';
